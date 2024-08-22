@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const isAuth = require('../middleware/isAuth');
 
-const { getCourse, getCourses, editCourse, deleteCourse, addCourse, addEvalCourse } = require('../controllers/CourseController');
+const { getCourse, getCourses, editCourse, deleteCourse, addCourse, addEvalCourse } = require('../controllers/courseController');
 
 /**
  * @swagger
