@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const isAuth = require('../middleware/isAuth');
 
-const { getCourse, getCourses, editCourse, deleteCourse, addCourse, addEvalCourse } = require('../controllers/courseController');
+const { getCourse, getCourses, editCourse, deleteCourse, addCourse, addEvalCourse, getCoursesByTeacher, getCoursesByStudent } = require('../controllers/courseController');
 
 /**
  * @swagger
@@ -23,6 +23,8 @@ const { getCourse, getCourses, editCourse, deleteCourse, addCourse, addEvalCours
  *         description: A single course
  */
 router.get('/:courseId', isAuth, getCourse);
+
+
 /**
  * @swagger
  * /api/course/add-course:
@@ -134,5 +136,45 @@ router.delete('/delete-course/:courseId', isAuth, deleteCourse);
  *         description: List of courses
  */
 router.get('/courses/all', isAuth, getCourses);
+
+/**
+ * @swagger
+ * /api/course/courses-by-teacher/{teacherId}:
+ *   get:
+ *     summary: Get a single course
+ *     tags: [Course]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: teacherId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: get courses by teacher
+ */
+router.get('/courses-by-teacher/:teacherId', isAuth, getCoursesByTeacher);
+
+/**
+ * @swagger
+ * /api/course/courses-by-student/{studentId}:
+ *   get:
+ *     summary: Get a single course
+ *     tags: [Course]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: get courses by student
+ */
+router.get('/courses-by-student/:studentId', isAuth, getCoursesByStudent);
 
 module.exports = router;

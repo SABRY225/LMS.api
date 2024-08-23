@@ -1,6 +1,7 @@
 const Course = require('../models/courseModel');
 const User = require('../models/userModel');
 const Evaluation = require('../models/evaluationModel');
+const CourseStudent = require('../models/courseStudentModel');
 
 const addCourse = async (req, res) => {
     try {
@@ -107,8 +108,29 @@ const editEvaluation = async (req, res) => {
     }
 };
 
+const getCoursesByTeacher = async (req, res) => {
+    try {
+        const teacherId=req.params.teacherId
+        const courses = await Course.findOne({userId:teacherId});
+        res.status(200).json(courses);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+const getCoursesByStudent = async (req, res) => {
+    try {
+        const studentId = req.params.studentId;
+        
+        const courses = await CourseStudent.find({ userId: studentId }).populate('courseId');
+
+        res.status(200).json(courses);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 
 module.exports = {
-    getCourse, getCourses, editCourse, deleteCourse, addCourse,editEvaluation
+    getCourse, getCourses, editCourse, deleteCourse, addCourse,editEvaluation,getCoursesByTeacher,getCoursesByStudent
 };
