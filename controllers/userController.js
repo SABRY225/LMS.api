@@ -40,7 +40,7 @@ const editUser = async (req, res, next) => {
         const { userName, address,userImg } = req.body; // Adjust according to your user schema
         const updatedUser = await User.findByIdAndUpdate(
             req.userId,
-            {userName, address,userImg }, // Fields to update
+            {firstName,lastName, address,userImg }, // Fields to update
             { new: true, runValidators: true }
         );
         if (!updatedUser) {
