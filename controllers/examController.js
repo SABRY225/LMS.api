@@ -28,7 +28,7 @@ const addExam = async (req, res) => {
             return res.status(404).json({ message: 'Course not found' });
         }
 
-        const newExam = new Exam({ name, questions, course: courseId });
+        const newExam = new Exam({ name, questions, courseId });
         await newExam.save();
 
         res.status(200).json({ message: 'Exam added successfully', exam: newExam });
@@ -76,15 +76,38 @@ const deleteExam = async (req, res) => {
 // Get all exams
 const getAllExams = async (req, res) => {
     try {
-        const exams = await Exam.find();
-        res.status(200).json(exams);
+        const { courseId } = req.params;
+
+        // جلب جميع الامتحانات المرتبطة بمعرف الكورس
+        const exams = await Exam.find({ courseId });
+        const userId =req.userId
+        // console.log(userId);
+        // // جلب جميع النتائج الخاصة بالطالب لنفس الامتحانات
+        const results = await Result.find({ 
+            userId,
+            // examId: exams.map(exam => exam._id )
+        });
+        //  console.log(exams.map(exam => exam._id));
+         
+        // دمج النتائج مع الامتحانات
+        const examsWithResults = exams.map(exam => {
+            const result = results.find(res => res.examId.toString() === exam._id.toString());
+            // console.log(result.userId.toString() == userId );
+            return {
+                ...exam._doc,
+                result: result && result.userId.toString() === userId.toString() ? result : null,
+            };
+        });
+
+        res.status(200).json(examsWithResults);
+        // res.status(200).json(results);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
 };
 
 // Edit an exam result
-const editResult = async (req, res) => {
+const addResult = async (req, res) => {
     try {
       const { examId } = req.params;
       const { value } = req.body;
@@ -100,28 +123,61 @@ const editResult = async (req, res) => {
         return res.status(404).json({ message: 'Exam not found' });
       }
       let result = await Result.findOne({userId });
-      if (result) {
-        // Update the existing evaluation
-        result.value = value;
-        await result.save();
-    } else {
-        // Create a new evaluation if it doesn't exist
+
         result = new Result({
             examId,
             userId,
             value
         });
         await result.save();
-    }
+
       res.status(200).json({ message: 'Result updated successfully', result });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error' });
     }
   };
+
+// Edit an exam result
+const editResult = async (req, res) => {
+    try {
+        const { resultId } = req.params;
+        const { value } = req.body;
+        const userId = req.userId;
+
+        if (!resultId || !value) {
+            return res.status(400).json({ message: 'Result ID and value are required' });
+        }
+
+        // Find the result by ID
+        const result = await Result.findById(resultId);
+        if (!result) {
+            return res.status(404).json({ message: 'Result not found' });
+        }
+
+        // Check if the user has permission to edit the result (optional based on your use case)
+        console.log(userId);
+        
+        
+        if (result.userId.toString() !== userId) {
+            return res.status(403).json({ message: 'Unauthorized to edit this result' });
+        }
+
+        // Update the result with the new value
+        result.value = value;
+        await result.save();
+
+        res.status(200).json({ message: 'Result updated successfully', result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
   
 module.exports = {
     editResult,
+    addResult,
     getExam,
     addExam,
     editExam,

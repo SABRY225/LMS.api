@@ -113,14 +113,20 @@ router.delete('/delete-lecture/:lectureId', isAuth, deleteLecture);
 
 /**
  * @swagger
- * /api/lecture/lectures/all:
+ * /api/lecture/lectures/{courseId}:
  *   get:
  *     summary: Get all lessons
  *     tags: [Lecture]
+ *     parameters:
+ *       - in: path
+ *         name: courseId
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of lessons
  */
-router.get('/lectures/all', isAuth, getLectures);
+router.get('/lectures/:courseId', isAuth, getLectures);
 
 module.exports = router;

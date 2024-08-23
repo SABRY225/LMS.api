@@ -39,7 +39,8 @@ const getLecture = async (req, res) => {
 // Get all Lectures
 const getLectures = async (req, res) => {
     try {
-        const Lectures = await Lecture.find({});
+        const { courseId } = req.params;
+        const Lectures = await Lecture.find({courseId});
         res.status(200).json(Lectures);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -135,12 +136,9 @@ const addLecture = async (req, res) => {
             return res.status(404).json({ message: 'Course not found' });
         }
         const { name, videoUrl } = req.body;
-        // console.log('LectureContent',LectureContent);
-        const newLecture = new Lecture({name, videoUrl });
-        // console.log('newLecture',newLecture);
-        const LectureId=newLecture._id
+        const newLecture = new Lecture({name, videoUrl ,courseId});
         const savedLecture = await newLecture.save();
-        // console.log(savednewLectureDetailes);
+
         res.status(201).json(savedLecture);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });

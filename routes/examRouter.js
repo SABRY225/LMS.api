@@ -7,7 +7,8 @@ const {
     editExam,
     deleteExam,
     getAllExams,
-    editResult
+    editResult,
+    addResult
 } = require('../controllers/examController');
 
 /**
@@ -150,21 +151,27 @@ router.delete('/delete-exam/:examId', isAuth, deleteExam);
 
 /**
  * @swagger
- * /api/exam/exams/all:
+ * /api/exam/exams/{courseId}:
  *   get:
  *     summary: Get all exams
  *     tags: [Exam]
+ *     parameters:
+ *       - in: path
+ *         name: courseId
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of exams
  */
-router.get('/exams/all', isAuth, getAllExams);
+router.get('/exams/:courseId', isAuth, getAllExams);
 
 
 /**
  * @swagger
- * /api/exam/edit-result/{examId}:
- *   put:
+ * /api/exam/add-result/{examId}:
+ *   post:
  *     summary: Edit an result of Student in course
  *     tags: [Exam]
  *     security:
@@ -189,7 +196,37 @@ router.get('/exams/all', isAuth, getAllExams);
  *       200:
  *         description: result updated
  */
-router.put('/edit-result/:examId', isAuth, editResult);
+router.post('/add-result/:examId', isAuth, addResult);
 
+
+/**
+ * @swagger
+ * /api/exam/edit-result/{resultId}:
+ *   put:
+ *     summary: Edit an result of Student in course
+ *     tags: [Exam]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: resultId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The course ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               value:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: result updated
+ */
+router.put('/edit-result/:resultId', isAuth, editResult);
 
 module.exports = router;
