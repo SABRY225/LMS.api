@@ -158,7 +158,6 @@ const editResult = async (req, res) => {
         // Check if the user has permission to edit the result (optional based on your use case)
         console.log(userId);
         
-        
         if (result.userId.toString() !== userId) {
             return res.status(403).json({ message: 'Unauthorized to edit this result' });
         }
