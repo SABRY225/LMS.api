@@ -5,11 +5,11 @@ const User = require("../models/userModel");
 
 const addStudent = async (req, res) => {
     try {
-        const { courseId, email } = req.body;
+        const { codeCourse, email } = req.body;
 
         // Check if the course exists
-        const course = await Course.findById(courseId);
-        
+        const course = await Course.findOne({code:codeCourse});
+        const courseId=course._id
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
         }
@@ -20,10 +20,8 @@ const addStudent = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
         const userId=user._id;
-        const courseStudent = await CourseStudent.findOne({userId});
+        const courseStudent = await CourseStudent.findOne({userId,courseId});
 
-        console.log(courseStudent);
-        
         // Check if the user is already enrolled in the course
         if (courseStudent) {
             return res.status(400).json({ message: 'Student already enrolled in this course' });

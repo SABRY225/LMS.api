@@ -24,7 +24,7 @@ const { addStudent } = require('../controllers/adminController');
  *           schema:
  *             type: object
  *             properties:
- *               courseId:
+ *               codeCourse:
  *                 type: string
  *               email:
  *                 type: string
