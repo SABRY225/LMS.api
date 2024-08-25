@@ -183,7 +183,7 @@ const addLecture = async (req, res) => {
         const newLecture = new Lecture({name, videoUrl ,courseId});
         const savedLecture = await newLecture.save();
 
-        res.status(201).json(savedLecture);
+        res.status(201).json('Lecture added to course successfully');
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
