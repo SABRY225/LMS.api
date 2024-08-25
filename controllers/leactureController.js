@@ -1,5 +1,6 @@
 const Lecture = require('../models/leactureModel'); 
 const Course = require('../models/courseModel'); 
+const mongoose = require('mongoose');
 
 // Get a single lesson
 const getLecture = async (req, res) => {
@@ -34,8 +35,6 @@ const getLecture = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
-
-
 // Get all Lectures
 const getLectures = async (req, res) => {
     try {
@@ -46,6 +45,51 @@ const getLectures = async (req, res) => {
         res.status(500).json({ message: 'Server error', error });
     }
 };
+
+// Get all Lectures by teacher
+const getLecturesByTeacher = async (req, res) => {
+    try {
+        const { teacherId } = req.params;
+
+        // Convert teacherId (string) to ObjectId
+        // const teacherObjectId = mongoose.Types.ObjectId(teacherId);
+        // console.log(teacherObjectId);
+        
+        // Find courses associated with the teacher
+        const courses = await Course.find({ userId: teacherId });
+        
+        
+        // Prepare an array to hold course details (id and name)
+        const courseDetails = courses.map(course => ({
+            courseId: course._id,
+            courseName: course.name,
+        }));
+
+        // Extract just the course IDs
+        const courseIds = courses.map(course => course._id);
+
+        // Find lectures that belong to these courses
+        const lectures = await Lecture.find({ courseId: { $in: courseIds } });
+
+        // Combine the lecture details with the course information
+        const result = lectures.map(lecture => {
+            const course = courseDetails.find(c => c.courseId.equals(lecture.courseId));
+            return {
+                ...lecture.toObject(),
+                courseId: course.courseId,
+                courseName: course.courseName,
+            };
+        });
+        
+        // Respond with the lectures along with course details
+        res.status(200).json(courseDetails);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
+
+
 
 // Edit an existing Lecture
 const editLecture = async (req, res) => {
@@ -151,4 +195,5 @@ module.exports = {
     editLecture,
     deleteLecture,
     addLecture,
+    getLecturesByTeacher
 };

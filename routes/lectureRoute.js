@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const isAuth = require('../middleware/isAuth');
-const { getLecture, addLecture, editLecture, deleteLecture, getLectures } = require('../controllers/leactureController');
+const { getLecture, addLecture, editLecture, deleteLecture, getLectures, getLecturesByTeacher } = require('../controllers/leactureController');
 
 /**
  * @swagger
@@ -128,5 +128,23 @@ router.delete('/delete-lecture/:lectureId', isAuth, deleteLecture);
  *         description: List of lessons
  */
 router.get('/lectures/:courseId', isAuth, getLectures);
+
+/**
+ * @swagger
+ * /api/lecture/lecturesbyteacer/{teacherId}:
+ *   get:
+ *     summary: Get all lessons
+ *     tags: [Lecture]
+ *     parameters:
+ *       - in: path
+ *         name: teacherId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of lessons
+ */
+router.get('/lecturesbyteacer/:teacherId', isAuth, getLecturesByTeacher);
 
 module.exports = router;
