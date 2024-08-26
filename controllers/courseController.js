@@ -111,6 +111,7 @@ const editEvaluation = async (req, res) => {
 const getCoursesByTeacher = async (req, res) => {
     try {
         const teacherId=req.params.teacherId
+        console.log(teacherId);
         const courses = await Course.find({userId:teacherId});
         res.status(200).json(courses);
     } catch (err) {

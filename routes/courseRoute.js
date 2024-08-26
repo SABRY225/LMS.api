@@ -94,8 +94,6 @@ router.post('/add-course', isAuth, addCourse);
  *                 type: string
  *               semester:
  *                 type: string
- *               code:
- *                 type: string
  *     responses:
  *       200:
  *         description: Course updated
