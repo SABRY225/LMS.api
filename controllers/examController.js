@@ -24,16 +24,18 @@ const addExam = async (req, res) => {
         const { name, questions } = req.body;
 
         const course = await Course.findById(courseId);
+        console.log(course);
+        
         if (!course) {
-            return res.status(404).json({ message: 'Course not found' });
+            return res.status(404).json({ message: 'Course not found',status: 404  });
         }
 
         const newExam = new Exam({ name, questions, courseId });
         await newExam.save();
 
-        res.status(200).json({ message: 'Exam added successfully', exam: newExam });
+        res.status(200).json({ message: 'Exam added successfully', status: 200 });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error' ,status: 500});
     }
 };
 
