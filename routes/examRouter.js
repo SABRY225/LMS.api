@@ -6,7 +6,8 @@ const {
     addExam,
     editExam,
     deleteExam,
-    getAllExams,
+    getAllExamsByCourse,
+    getAllExamsByTeacher,
     editResult,
     addResult
 } = require('../controllers/examController');
@@ -165,7 +166,26 @@ router.delete('/delete-exam/:examId', isAuth, deleteExam);
  *       200:
  *         description: List of exams
  */
-router.get('/exams/:courseId', isAuth, getAllExams);
+router.get('/exams/:courseId', isAuth, getAllExamsByCourse);
+
+
+/**
+ * @swagger
+ * /api/exam/examsbyteacher/{teacherId}:
+ *   get:
+ *     summary: Get all exams
+ *     tags: [Exam]
+ *     parameters:
+ *       - in: path
+ *         name: teacherId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of exams by teacher
+ */
+router.get('/examsbyteacher/:teacherId', isAuth, getAllExamsByTeacher);
 
 
 /**

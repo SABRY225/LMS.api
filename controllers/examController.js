@@ -76,7 +76,7 @@ const deleteExam = async (req, res) => {
 };
 
 // Get all exams
-const getAllExams = async (req, res) => {
+const getAllExamsByCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
 
@@ -105,6 +105,23 @@ const getAllExams = async (req, res) => {
         // res.status(200).json(results);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
+    }
+};
+// Get all exams by teacher
+const getAllExamsByTeacher = async (req, res) => {
+    try {
+        const { teacherId } = req.params;
+        const courses = await Course.find({ userId: teacherId });
+
+        const examsWithResults = await Promise.all(courses.map(async (course) => {
+            const exams = await Exam.find({ courseId: course.id });
+            return { course, exams };
+        }));
+
+        console.log(examsWithResults);
+        res.status(200).json(examsWithResults);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', status: 500 });
     }
 };
 
@@ -183,5 +200,6 @@ module.exports = {
     addExam,
     editExam,
     deleteExam,
-    getAllExams
+    getAllExamsByCourse,
+    getAllExamsByTeacher
 };
