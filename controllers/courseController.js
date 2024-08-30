@@ -59,12 +59,21 @@ const getCourse = async (req, res) => {
 
 const getCourses = async (req, res) => {
     try {
-        const courses = await Course.find({});
+        const userId = req.userId;
+
+        // الحصول على الكورسات التي يشترك فيها الطالب
+        const studentCourses = await CourseStudent.find({ userId }).select('courseId');
+        const studentCourseIds = studentCourses.map(course => course.courseId);
+
+        // الحصول على الكورسات باستثناء التي يشترك فيها الطالب
+        const courses = await Course.find({ _id: { $nin: studentCourseIds } });
+
         res.status(200).json(courses);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+
 
 const editEvaluation = async (req, res) => {
     try {
