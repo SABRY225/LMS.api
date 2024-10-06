@@ -5,6 +5,12 @@ const {  verifyOTP, sendOTP } = require('../controllers/otpController');
 
 /**
  * @swagger
+ * tags:
+ *   name: Auth
+ */
+
+/**
+ * @swagger
  * /api/auth/login:
  *   post:
  *     summary: Login a user
